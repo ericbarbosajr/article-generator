@@ -34,7 +34,7 @@ export default function RootLayout({
                 <li className="font-bold text-lg">Article Generator</li>
                 <li>
                   <Link
-                    href="/home"
+                    href="/dashboard"
                     className="text-gray-700 hover:text-blue-600">
                     Dashboard
                   </Link>

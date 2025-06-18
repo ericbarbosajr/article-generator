@@ -9,7 +9,7 @@ interface Article {
   content: string;
 }
 
-export default function Home() {
+export default function Dashboard() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(false);
 
