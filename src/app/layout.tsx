@@ -47,11 +47,11 @@ export default function RootLayout({
                   </Link>
                 </li>
                 <li>
-                  <a
-                    href="#"
+                  <Link
+                    href="/settings"
                     className="text-gray-700 hover:text-blue-600">
                     Settings
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </nav>
