@@ -25,9 +25,38 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-50 min-h-screen`}>
+        <div className="flex min-h-screen">
+          <aside className="w-64 bg-white border-r border-gray-200 p-6">
+            <nav>
+              <ul className="space-y-4">
+                <li className="font-bold text-lg">Sidebar</li>
+                <li>
+                  <a
+                    href="#"
+                    className="text-gray-700 hover:text-blue-600">
+                    Home
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    className="text-gray-700 hover:text-blue-600">
+                    Dashboard
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    className="text-gray-700 hover:text-blue-600">
+                    Settings
+                  </a>
+                </li>
+              </ul>
+            </nav>
+          </aside>
+          <main className="flex-1 p-8">{children}</main>
+        </div>
       </body>
     </html>
   );
