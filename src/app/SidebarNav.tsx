@@ -15,7 +15,7 @@ export default function SidebarNav() {
           </li>
           <li>
             <Link
-              href="/"
+              href="/articles"
               className="text-gray-700 hover:text-blue-600">
               Articles
             </Link>
