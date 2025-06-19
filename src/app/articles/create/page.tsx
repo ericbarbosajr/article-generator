@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { supabase } from "../../supabaseClient";
+import { supabase } from "../../../supabaseClient";
 
 export default function CreateArticle() {
   const [title, setTitle] = useState("");

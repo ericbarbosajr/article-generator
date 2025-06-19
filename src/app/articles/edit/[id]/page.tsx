@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { supabase } from "../../../supabaseClient";
+import { supabase } from "../../../../supabaseClient";
 
 export default function EditArticle() {
   const router = useRouter();
