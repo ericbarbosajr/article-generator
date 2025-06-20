@@ -1,11 +1,8 @@
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 
-export default async function EditArticle({
-  params,
-}: {
-  params: { id: string };
-}) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export default async function EditArticle({ params }: { params: any }) {
   const supabase = await createClient();
 
   const {
