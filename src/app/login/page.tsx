@@ -3,23 +3,21 @@ import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { createClient } from "@/utils/supabase/client";
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const supabase = createClient();
-  const router = useRouter();
 
   useEffect(() => {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
       if (session) {
-        router.push("/");
+        window.location.href = "/";
       }
     });
 
     return () => subscription.unsubscribe();
-  }, [router, supabase.auth]);
+  }, [supabase.auth]);
 
   return (
     <div className="flex justify-center items-center h-screen">
