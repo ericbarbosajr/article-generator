@@ -14,7 +14,7 @@ export default function LoginPage() {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
       if (session) {
-        router.push("/dashboard");
+        router.push("/");
       }
     });
 
