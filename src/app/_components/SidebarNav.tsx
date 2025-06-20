@@ -1,16 +1,19 @@
 import Link from "next/link";
-import type { Session } from "@supabase/auth-helpers-nextjs";
+import type { User } from "@supabase/supabase-js";
 
 type SidebarNavProps = {
-  session: Session | null;
+  user: User | null;
 };
 
-export default function SidebarNav({ session }: SidebarNavProps) {
+export default function SidebarNav({ user }: SidebarNavProps) {
   return (
     <aside className="w-64 bg-white border-r border-gray-200 p-6">
       <nav>
         <ul className="space-y-4">
           <li className="font-bold text-lg">Article Generator</li>
+          {user && (
+            <li className="text-gray-500 text-sm truncate">{user.email}</li>
+          )}
           <li>
             <Link
               href="/"
@@ -33,7 +36,7 @@ export default function SidebarNav({ session }: SidebarNavProps) {
             </Link>
           </li>
           <li>
-            {session ? (
+            {user ? (
               <form
                 action="/auth/logout"
                 method="post">

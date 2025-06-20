@@ -25,7 +25,10 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const supabase = await createClient();
-  const { error } = await supabase.auth.getUser();
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
 
   if (error) console.error(error);
 
@@ -34,8 +37,8 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-50 min-h-screen`}>
         <div className="flex min-h-screen">
-          {/* Only pass session if you have a full Session object, otherwise pass null */}
-          <SidebarNav session={null} />
+          {/* Pass user object to SidebarNav */}
+          <SidebarNav user={user} />
           <main className="flex-1 p-8">{children}</main>
         </div>
       </body>
