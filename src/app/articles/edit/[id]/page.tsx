@@ -1,5 +1,4 @@
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
+import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 
 export default async function EditArticle({
@@ -7,13 +6,15 @@ export default async function EditArticle({
 }: {
   params: { id: string };
 }) {
-  const supabase = createServerComponentClient({ cookies });
+  const supabase = await createClient();
 
   const {
-    data: { session },
-  } = await supabase.auth.getSession();
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
 
-  if (!session) {
+  if (error || !user) {
+    if (error) console.error(error);
     redirect("/login");
   }
 
@@ -21,6 +22,7 @@ export default async function EditArticle({
     .from("articles")
     .select("*")
     .eq("id", params.id)
+    .eq("user_id", user.id)
     .single();
 
   if (!article) {
@@ -33,7 +35,7 @@ export default async function EditArticle({
     const content = formData.get("content") as string;
     if (!title || !content) return;
 
-    const supabase = createServerComponentClient({ cookies });
+    const supabase = await createClient();
     const { error } = await supabase
       .from("articles")
       .update({ title, content })

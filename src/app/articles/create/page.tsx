@@ -1,15 +1,16 @@
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
+import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 
 export default async function CreateArticle() {
-  const supabase = createServerComponentClient({ cookies });
+  const supabase = await createClient();
 
   const {
-    data: { session },
-  } = await supabase.auth.getSession();
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
 
-  if (!session) {
+  if (error || !user) {
+    if (error) console.error(error);
     redirect("/login");
   }
 
@@ -19,10 +20,19 @@ export default async function CreateArticle() {
     const content = formData.get("content") as string;
     if (!title || !content) return;
 
-    const supabase = createServerComponentClient({ cookies });
+    const supabase = await createClient();
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser();
+    if (userError || !user) return;
+
     const { error } = await supabase
       .from("articles")
-      .insert([{ title, content }]);
+      .insert([{ title, content, user_id: user.id }]);
+
+    console.log(error);
+
     if (!error) {
       redirect("/articles");
     }

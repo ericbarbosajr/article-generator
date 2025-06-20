@@ -1,6 +1,5 @@
 import Link from "next/link";
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
+import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 
 interface Article {
@@ -10,17 +9,22 @@ interface Article {
 }
 
 export default async function ArticlesPage() {
-  const supabase = createServerComponentClient({ cookies });
+  const supabase = await createClient();
 
   const {
-    data: { session },
-  } = await supabase.auth.getSession();
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
 
-  if (!session) {
+  if (error || !user) {
+    if (error) console.error(error);
     redirect("/login");
   }
 
-  const { data: articles, error } = await supabase.from("articles").select("*");
+  const { data: articles } = await supabase
+    .from("articles")
+    .select("*")
+    .eq("user_id", user.id);
 
   return (
     <div>
@@ -32,7 +36,9 @@ export default async function ArticlesPage() {
           Create New Article
         </Link>
       </div>
-      {error && <p className="text-red-500">{error.message}</p>}
+      {error && typeof error === "object" && "message" in error && (
+        <p className="text-red-500">{(error as { message: string }).message}</p>
+      )}
       {!articles || articles.length === 0 ? (
         <p>No articles found.</p>
       ) : (

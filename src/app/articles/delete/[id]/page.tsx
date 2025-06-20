@@ -1,5 +1,4 @@
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
+import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 
 export default async function DeleteArticle({
@@ -7,13 +6,15 @@ export default async function DeleteArticle({
 }: {
   params: { id: string };
 }) {
-  const supabase = createServerComponentClient({ cookies });
+  const supabase = await createClient();
 
   const {
-    data: { session },
-  } = await supabase.auth.getSession();
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
 
-  if (!session) {
+  if (error || !user) {
+    if (error) console.error(error);
     redirect("/login");
   }
 
@@ -29,7 +30,7 @@ export default async function DeleteArticle({
 
   async function handleDelete() {
     "use server";
-    const supabase = createServerComponentClient({ cookies });
+    const supabase = await createClient();
     const { error } = await supabase
       .from("articles")
       .delete()
