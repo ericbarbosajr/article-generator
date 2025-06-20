@@ -13,7 +13,7 @@ export default function SidebarNav({ session }: SidebarNavProps) {
           <li className="font-bold text-lg">Article Generator</li>
           <li>
             <Link
-              href="/dashboard"
+              href="/"
               className="text-gray-700 hover:text-blue-600">
               Dashboard
             </Link>
