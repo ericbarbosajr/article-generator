@@ -1,6 +1,11 @@
 import Link from "next/link";
+import type { Session } from "@supabase/auth-helpers-nextjs";
 
-export default function SidebarNav() {
+type SidebarNavProps = {
+  session: Session | null;
+};
+
+export default function SidebarNav({ session }: SidebarNavProps) {
   return (
     <aside className="w-64 bg-white border-r border-gray-200 p-6">
       <nav>
@@ -26,6 +31,25 @@ export default function SidebarNav() {
               className="text-gray-700 hover:text-blue-600">
               Settings
             </Link>
+          </li>
+          <li>
+            {session ? (
+              <form
+                action="/auth/logout"
+                method="post">
+                <button
+                  type="submit"
+                  className="text-gray-700 hover:text-blue-600">
+                  Logout
+                </button>
+              </form>
+            ) : (
+              <Link
+                href="/login"
+                className="text-gray-700 hover:text-blue-600">
+                Login
+              </Link>
+            )}
           </li>
         </ul>
       </nav>

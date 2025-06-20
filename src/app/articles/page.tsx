@@ -1,7 +1,7 @@
-"use client";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { supabase } from "../../supabaseClient";
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 interface Article {
   id: number;
@@ -9,20 +9,18 @@ interface Article {
   content: string;
 }
 
-export default function ArticlesPage() {
-  const [articles, setArticles] = useState<Article[]>([]);
-  const [loading, setLoading] = useState(false);
+export default async function ArticlesPage() {
+  const supabase = createServerComponentClient({ cookies });
 
-  useEffect(() => {
-    fetchArticles();
-  }, []);
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
 
-  async function fetchArticles() {
-    setLoading(true);
-    const { data, error } = await supabase.from("articles").select("*");
-    if (!error && data) setArticles(data);
-    setLoading(false);
+  if (!session) {
+    redirect("/login");
   }
+
+  const { data: articles, error } = await supabase.from("articles").select("*");
 
   return (
     <div>
@@ -34,11 +32,12 @@ export default function ArticlesPage() {
           Create New Article
         </Link>
       </div>
-      {loading ? (
-        <p>Loading...</p>
+      {error && <p className="text-red-500">{error.message}</p>}
+      {!articles || articles.length === 0 ? (
+        <p>No articles found.</p>
       ) : (
         <ul className="space-y-4">
-          {articles.map((article) => (
+          {articles.map((article: Article) => (
             <li
               key={article.id}
               className="border p-4 rounded bg-white">

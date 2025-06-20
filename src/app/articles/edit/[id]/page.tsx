@@ -1,65 +1,71 @@
-"use client";
-import { useEffect, useState } from "react";
-import { useRouter, useParams } from "next/navigation";
-import { supabase } from "../../../../supabaseClient";
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
-export default function EditArticle() {
-  const router = useRouter();
-  const params = useParams();
-  const { id } = params;
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [loading, setLoading] = useState(false);
+export default async function EditArticle({
+  params,
+}: {
+  params: { id: string };
+}) {
+  const supabase = createServerComponentClient({ cookies });
 
-  useEffect(() => {
-    async function fetchArticle() {
-      const { data, error } = await supabase
-        .from("articles")
-        .select("*")
-        .eq("id", id)
-        .single();
-      if (!error && data) {
-        setTitle(data.title);
-        setContent(data.content);
-      }
-    }
-    if (id) fetchArticle();
-  }, [id]);
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
 
-  async function handleUpdate(e: React.FormEvent) {
-    e.preventDefault();
-    setLoading(true);
+  if (!session) {
+    redirect("/login");
+  }
+
+  const { data: article } = await supabase
+    .from("articles")
+    .select("*")
+    .eq("id", params.id)
+    .single();
+
+  if (!article) {
+    return <div>Article not found</div>;
+  }
+
+  async function handleUpdate(formData: FormData) {
+    "use server";
+    const title = formData.get("title") as string;
+    const content = formData.get("content") as string;
+    if (!title || !content) return;
+
+    const supabase = createServerComponentClient({ cookies });
     const { error } = await supabase
       .from("articles")
       .update({ title, content })
-      .eq("id", id);
-    setLoading(false);
-    if (!error) router.push("/");
+      .eq("id", params.id);
+
+    if (!error) {
+      redirect("/articles");
+    }
   }
 
   return (
     <div>
       <h1 className="text-2xl font-bold mb-4">Edit Article</h1>
       <form
-        onSubmit={handleUpdate}
+        action={handleUpdate}
         className="space-y-2">
         <input
+          name="title"
           className="border p-2 w-full"
           placeholder="Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          defaultValue={article.title}
         />
         <textarea
+          name="content"
           className="border p-2 w-full"
           placeholder="Content"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
+          defaultValue={article.content}
         />
         <button
           type="submit"
-          className="bg-yellow-500 text-white px-4 py-2 rounded"
-          disabled={loading}>
-          {loading ? "Updating..." : "Update"}
+          className="bg-yellow-500 text-white px-4 py-2 rounded">
+          Update
         </button>
       </form>
     </div>
