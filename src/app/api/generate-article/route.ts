@@ -5,6 +5,11 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
+const MAX_INPUT_LENGTH = parseInt(
+  process.env.NEXT_PUBLIC_MAX_INPUT_LENGTH || "2000",
+  10
+);
+
 export async function POST(req: NextRequest) {
   try {
     const { content } = await req.json();
@@ -12,6 +17,15 @@ export async function POST(req: NextRequest) {
     if (!content) {
       return NextResponse.json(
         { error: "Content is required" },
+        { status: 400 }
+      );
+    }
+
+    if (content.length > MAX_INPUT_LENGTH) {
+      return NextResponse.json(
+        {
+          error: `Content is too long. Maximum allowed is ${MAX_INPUT_LENGTH} characters.`,
+        },
         { status: 400 }
       );
     }

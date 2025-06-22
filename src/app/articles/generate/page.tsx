@@ -11,9 +11,22 @@ const GenerateArticlePage = () => {
     content: string;
   } | null>(null);
   const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
   const router = useRouter();
 
+  const MAX_INPUT_LENGTH = parseInt(
+    process.env.NEXT_PUBLIC_MAX_INPUT_LENGTH || "2000",
+    10
+  );
+
   const handleGenerate = async () => {
+    setErrorMsg("");
+    if (input.length > MAX_INPUT_LENGTH) {
+      setErrorMsg(
+        `Input is too long. Maximum allowed is ${MAX_INPUT_LENGTH} characters.`
+      );
+      return;
+    }
     setLoading(true);
     setGenerated(null);
 
@@ -34,8 +47,7 @@ const GenerateArticlePage = () => {
       setGenerated(data);
     } catch (error) {
       console.error(error);
-      // Optionally, show an error message to the user
-      alert("An error occurred while generating the article.");
+      setErrorMsg("An error occurred while generating the article.");
     } finally {
       setLoading(false);
     }
@@ -76,7 +88,12 @@ const GenerateArticlePage = () => {
         value={input}
         onChange={(e) => setInput(e.target.value)}
         disabled={loading}
+        maxLength={MAX_INPUT_LENGTH + 1}
       />
+      <div className="text-sm text-gray-500 mb-2">
+        {input.length}/{MAX_INPUT_LENGTH} characters
+      </div>
+      {errorMsg && <div className="text-red-600 mb-2">{errorMsg}</div>}
       <button
         className="bg-blue-600 text-white px-4 py-2 rounded disabled:opacity-50"
         onClick={handleGenerate}
