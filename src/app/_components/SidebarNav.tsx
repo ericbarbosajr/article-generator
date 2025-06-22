@@ -30,6 +30,13 @@ export default function SidebarNav({ user }: SidebarNavProps) {
           </li>
           <li>
             <Link
+              href="/articles/generate"
+              className="text-gray-700 hover:text-blue-600">
+              Generate Article
+            </Link>
+          </li>
+          <li>
+            <Link
               href="/settings"
               className="text-gray-700 hover:text-blue-600">
               Settings
