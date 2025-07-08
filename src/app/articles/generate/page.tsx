@@ -3,6 +3,8 @@
 import React, { useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 
 const GenerateArticlePage = () => {
   const [input, setInput] = useState("");
@@ -82,34 +84,33 @@ const GenerateArticlePage = () => {
   return (
     <div className="max-w-2xl mx-auto py-8 px-4">
       <h1 className="text-2xl font-bold mb-4">Generate Article</h1>
-      <textarea
-        className="w-full border rounded p-2 mb-4 min-h-[120px]"
+      <Textarea
         placeholder="Paste your text content here..."
         value={input}
         onChange={(e) => setInput(e.target.value)}
         disabled={loading}
         maxLength={MAX_INPUT_LENGTH + 1}
+        className="mb-4 min-h-[120px]"
       />
       <div className="text-sm text-gray-500 mb-2">
         {input.length}/{MAX_INPUT_LENGTH} characters
       </div>
       {errorMsg && <div className="text-red-600 mb-2">{errorMsg}</div>}
-      <button
-        className="bg-blue-600 text-white px-4 py-2 rounded disabled:opacity-50"
+      <Button
         onClick={handleGenerate}
         disabled={loading || !input.trim()}>
         {loading ? "Generating..." : "Generate"}
-      </button>
+      </Button>
 
       {generated && (
         <div className="mt-8 border-t pt-6">
           <h2 className="text-xl font-semibold mb-2">{generated.title}</h2>
           <p className="mb-4 whitespace-pre-line">{generated.content}</p>
-          <button
-            className="bg-green-600 text-white px-4 py-2 rounded"
+          <Button
+            className="bg-green-600 text-white"
             onClick={handleSave}>
             Save
-          </button>
+          </Button>
         </div>
       )}
     </div>
