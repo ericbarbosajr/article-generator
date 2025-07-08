@@ -1,5 +1,6 @@
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default async function DeleteArticle({ params }: { params: any }) {
@@ -46,18 +47,18 @@ export default async function DeleteArticle({ params }: { params: any }) {
       </div>
       <div className="flex gap-2">
         <form action={handleDelete}>
-          <button
+          <Button
             type="submit"
-            className="bg-red-600 text-white px-4 py-2 rounded">
+            variant="destructive">
             Confirm Delete
-          </button>
+          </Button>
         </form>
         <form action="/articles">
-          <button
+          <Button
             type="submit"
-            className="bg-gray-400 text-white px-4 py-2 rounded">
+            variant="secondary">
             Cancel
-          </button>
+          </Button>
         </form>
       </div>
     </div>
