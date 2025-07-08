@@ -7,13 +7,10 @@ type SidebarNavProps = {
 
 export default function SidebarNav({ user }: SidebarNavProps) {
   return (
-    <aside className="w-64 bg-white border-r border-gray-200 p-6">
-      <nav>
-        <ul className="space-y-4">
+    <aside className="w-64 bg-white border-r border-gray-200 p-6 h-full min-h-screen flex flex-col">
+      <nav className="flex flex-col flex-1">
+        <ul className="space-y-4 flex flex-col h-full flex-1 ">
           <li className="font-bold text-lg">Article Generator</li>
-          {user && (
-            <li className="text-gray-500 text-sm truncate">{user.email}</li>
-          )}
           <li>
             <Link
               href="/"
@@ -42,6 +39,12 @@ export default function SidebarNav({ user }: SidebarNavProps) {
               Settings
             </Link>
           </li>
+          <div className="flex-grow" />
+          {user && (
+            <li className="text-gray-500 text-sm truncate mb-2">
+              {user.email}
+            </li>
+          )}
           <li>
             {user ? (
               <form
